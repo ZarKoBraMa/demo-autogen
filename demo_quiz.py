@@ -58,24 +58,31 @@ quiz_participant_human = ConversableAgent(
 
 quiz_participant_evaluator = ConversableAgent(
     name="quiz_participant_evaluator",
-    system_message="quiz_referee will provide you answers from both quiz participants. Provide feedback to them are the answers correct or not and provide list of participants names who answered correctly on question.",
+    system_message="quiz_referee will provide you answers from both quiz participants. Provide feedback to them are the answers correct or not.",
     llm_config={"config_list": config_list, "cache_seed": None},
     human_input_mode="NEVER"
 )
 
 quiz_participant_scorer = ConversableAgent(
     name="quiz_participant_scorer",
+    system_message="Provide list of participants names who answered correctly on question.",
+    llm_config={"config_list": config_list, "cache_seed": None},
+    human_input_mode="NEVER"
+)
+
+quiz_participant_recorder = ConversableAgent(
+    name="quiz_participant_recorder",
     llm_config=False,
     human_input_mode="NEVER"
 )
 
-quiz_participant_evaluator.register_for_llm(name="update_scores", description="A tool for manage score of participants")(update_scores)
-quiz_participant_scorer.register_for_execution(name="update_scores")(update_scores)
+quiz_participant_scorer.register_for_llm(name="update_scores", description="A tool for manage score of participants")(update_scores)
+quiz_participant_recorder.register_for_execution(name="update_scores")(update_scores)
 
 group_chat = GroupChat(
-    agents=[quiz_participant_bot, quiz_participant_human, quiz_participant_evaluator, quiz_participant_scorer],
+    agents=[quiz_participant_bot, quiz_participant_human, quiz_participant_evaluator, quiz_participant_scorer, quiz_participant_recorder],
     messages=[],
-    max_round=5,
+    max_round=6,
     speaker_selection_method="round_robin"
 ) 
 
