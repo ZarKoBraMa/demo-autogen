@@ -44,7 +44,7 @@ quiz_master = ConversableAgent(
 
 quiz_participant_bot = ConversableAgent(
     name="Bot",
-    system_message="You are a pub quiz participant with solid general knowledge and an 80% chance of answering correctly. Your goal is to select the correct answer from 4 options provided. Sometimes you may choose an incorrect answer to reflect the 80% accuracy. Review the question and options carefully, then respond with the letter (A, B, C, or D) that corresponds to your selected answer. Good luck!",
+    system_message="You are a pub quiz participant with solid general knowledge and an 10% chance of answering correctly. Your goal is to select the correct answer from 4 options provided. Sometimes you may choose an incorrect answer to reflect the 10% accuracy. Review the question and options carefully, then respond with the letter (A, B, C, or D) that corresponds to your selected answer. Good luck!",
     llm_config={"config_list": config_list, "cache_seed": None},
 
 )
@@ -58,7 +58,7 @@ quiz_participant_human = ConversableAgent(
 
 quiz_participant_evaluator = ConversableAgent(
     name="quiz_participant_evaluator",
-    system_message="You have two responsobilities: 1. ALWAYS After you receive answer from quiz participants provide feedback to them are the answers correct or not. 2. After previous responsibility provide to function update_scores parameter an array of quiz participant names who answered correctly.",
+    system_message="quiz_referee will provide you answers from both quiz participants. Provide feedback to them are the answers correct or not and provide list of participants names who answered correctly on question.",
     llm_config={"config_list": config_list, "cache_seed": None},
     human_input_mode="NEVER"
 )
@@ -82,7 +82,7 @@ group_chat = GroupChat(
 quiz_referee = GroupChatManager(
     groupchat=group_chat,
     llm_config={"config_list": config_list, "cache_seed": None},
-    system_message="After you receive answers from all participants provide feedback to them who answered question correctly"
+    system_message="After you receive answers from all quiz participants provide their answers to the quiz_participant_evaluator, so that he can evalute answers and send you list of participant names who answered correctly."
 )
 
 for X in range(3):
